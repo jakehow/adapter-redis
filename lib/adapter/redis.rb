@@ -4,11 +4,19 @@ require 'redis'
 module Adapter
   module Redis
     def read(key)
-      decode(client.get(key_for(key)))
+      if @options[:hash]
+        decode(client.get(key_for(key)))
+      else
+        decode(client.hget(@options[:hash], key_for(key)))
+      end
     end
 
     def write(key, value)
-      client.set(key_for(key), encode(value))
+      if @options[:hash]
+        client.set(key_for(key), encode(value))
+      else
+        client.hset(@options[:hash],key_for(key), encode(value))    
+      end
     end
 
     def delete(key)
