@@ -28,7 +28,23 @@ module Adapter
         end
       end
     end
+    
+    def count
+      if @options[:hash]
+        client.hlen(@options[:hash])
+      else
+        raise StandardError, "option :hash required for counting"
+      end
+    end
 
+    def all_keys
+      if @options[:hash]
+        client.hkeys(@options[:hash])
+      else
+        raise StandardError, "option :hash required for retrieving all keys"
+      end
+    end
+    
     def clear
       client.flushdb
     end
